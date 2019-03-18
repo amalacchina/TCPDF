@@ -1818,6 +1818,11 @@ class TCPDF {
 	 */
 	protected $gdgammacache = array();
 
+    /**
+     * Custom metadata properties
+     * @protected
+     */
+	protected $custom_props = array();
 	//------------------------------------------------------------
 	// METHODS
 	//------------------------------------------------------------
@@ -9481,6 +9486,11 @@ class TCPDF {
 		$out .= ' /CreationDate '.$this->_datestring(0, $this->doc_creation_timestamp);
 		// The date and time the document was most recently modified, in human-readable form
 		$out .= ' /ModDate '.$this->_datestring(0, $this->doc_modification_timestamp);
+		if (!empty($this->custom_props)) {
+		    foreach($this->custom_props as $key => $val) {
+                $out .= ' /'.$key.'('.TCPDF_STATIC::_escapeXML($val).')';
+            }
+        }
 		// A name object indicating whether the document has been modified to include trapping information
 		$out .= ' /Trapped /False';
 		$out .= ' >>';
@@ -9498,6 +9508,15 @@ class TCPDF {
 	 */
 	public function setExtraXMP($xmp) {
 		$this->custom_xmp = $xmp;
+	}
+
+    /**
+     * Add custom metadata properties to the PDF document
+     * @param $key
+     * @param $value
+     */
+    public function setCustomProperties($key, $value) {
+        $this->custom_props[$key] = $value;
 	}
 
 	/**
